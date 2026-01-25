@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+  USER
+}
+
+model User {
+  id       String  @id @default(cuid())
+  email    String  @unique
+  password String?
+  name     String?
+  role     Role    @default(USER)
+
+  profile   Profile?
+  booking   Booking?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id       String  @id @default(cuid())
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String  @unique
+  phone    String?
+  address  String?
+  city     String?
+  province String?
+  country  String?
+  zipCode  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  PAID
+  CONFIRMED
+  CANCELLED
+}
+
+model Booking {
+  id String @id @default(cuid())
+
+  status BookingStatus @default(PENDING)
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  room   Room   @relation(fields: [roomId], references: [id])
+  roomId String @unique
+
+  priceAtBooking Float
+  quantity       Int   @default(1)
+
+  payment Payment?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  booking   Booking?  @relation(fields: [bookingId], references: [id])
+  bookingId String?
+  bookings  Booking[]
+}
+
+model Room {
+  id    String @id @default(cuid())
+  name  String
+  type  String
+  price Float
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookings  Booking[]
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum PaymentType {
+  GOPAY
+  QRIS
+  BANK_TRANSFER
+  CREDIT_CARD
+  SHOPEEPAY
+}
+
+model Payment {
+  id String @id @default(cuid())
+
+  amount Float
+  status PaymentStatus @default(PENDING)
+  type   PaymentType?
+
+  midtransOrderId String    @unique
+  transactionTime DateTime?
+  settlementTime  DateTime?
+
+  booking   Booking @relation(fields: [bookingId], references: [id])
+  bookingId String  @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
