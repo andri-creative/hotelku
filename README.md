@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hotelku - Website Booking Hotel
 
-## Getting Started
+Proyek aplikasi web booking hotel menggunakan **Next.js 16**, **TypeScript**, **Tailwind CSS**, dan **PostgreSQL** dengan ORM **Prisma**.
 
-First, run the development server:
+---
+
+## 📋 Alur Pengembangan Saat Ini
+
+### ✅ Tahap Selesai:
+
+1. **Setup Proyek Dasar**
+   - Next.js 16 dengan App Router
+   - TypeScript configuration
+   - Tailwind CSS v4
+   - ESLint setup
+
+2. **Database & ORM**
+   - PostgreSQL database configured
+   - Prisma schema defined dengan models:
+     - `User` (dengan Role: SUPER_ADMIN, ADMIN, STAFF, USER)
+     - `Profile` (data profil user)
+     - `Booking` (status: PENDING, PAID, CONFIRMED, CANCELLED)
+   - Prisma Client generated di `/generated/prisma`
+
+3. **Frontend Struktur**
+   - Layout utama di `app/layout.tsx`
+   - Home page di `app/page.tsx`
+   - Navbar component di `components/header/navbar.tsx`
+   - SEO component di `components/seo.tsx`
+   - Global CSS styling
+
+4. **Dependencies Installed**
+   - @prisma/client & @prisma/adapter-pg
+   - lucide-react (icons)
+   - nextjs-toploader (loading bar)
+   - pg (PostgreSQL driver)
+   - Tailwind CSS & TypeScript
+
+### 🚧 Tahap Selanjutnya:
+
+- [ ] Authentication system (login/register)
+- [ ] Hotel list & detail pages
+- [ ] Search & filter functionality
+- [ ] Booking form & checkout
+- [ ] Payment integration
+- [ ] User dashboard
+- [ ] Admin dashboard
+- [ ] Database migrations & seeding
+
+---
+
+## 🚀 Getting Started
+
+Jalankan development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000) di browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📂 Project Structure
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+hotelku/
+├── app/                    # Next.js App Router
+├── components/             # Reusable React components
+├── prisma/                 # Database schema & migrations
+├── public/                 # Static files
+├── generated/              # Prisma Client (generated)
+├── package.json            # Dependencies
+├── tsconfig.json           # TypeScript config
+└── next.config.ts          # Next.js config
+```
