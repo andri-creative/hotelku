@@ -12,7 +12,9 @@
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "dotenv": "^17.2.3",
+    "lucide-react": "^0.563.0",
     "next": "16.1.4",
+    "nextjs-toploader": "^3.9.17",
     "pg": "^8.17.2",
     "react": "19.2.3",
     "react-dom": "19.2.3"
