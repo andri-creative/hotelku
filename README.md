@@ -36,6 +36,11 @@ Proyek aplikasi web booking hotel menggunakan **Next.js 16**, **TypeScript**, **
    - pg (PostgreSQL driver)
    - Tailwind CSS & TypeScript
 
+5. **Admin Dashboard UI**
+   - Layout Admin (`app/(admin)/layout.tsx`)
+   - Sidebar navigasi & Header
+   - Dashboard page structure
+
 ### 🚧 Tahap Selanjutnya:
 
 - [ ] Authentication system (login/register)
