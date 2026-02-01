@@ -10,107 +10,135 @@ datasource db {
 enum Role {
   SUPER_ADMIN
   ADMIN
-  STAFF
-  USER
+  KEUANGAN
+  RESEPSIONIS
 }
 
-model User {
-  id       String  @id @default(cuid())
-  email    String  @unique
-  password String?
-  name     String?
-  role     Role    @default(USER)
-
-  profile   Profile?
-  booking   Booking?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Profile {
-  id       String  @id @default(cuid())
-  user     User    @relation(fields: [userId], references: [id])
-  userId   String  @unique
-  phone    String?
-  address  String?
-  city     String?
-  province String?
-  country  String?
-  zipCode  String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum BookingSource {
+  ONLINE
+  RESEPSIONIS
 }
 
 enum BookingStatus {
   PENDING
-  PAID
-  CONFIRMED
-  CANCELLED
+  TERKONFIRMASI
+  CHECK_IN
+  CHECK_OUT
+  BATAL
 }
 
-model Booking {
-  id String @id @default(cuid())
-
-  status BookingStatus @default(PENDING)
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
-
-  room   Room   @relation(fields: [roomId], references: [id])
-  roomId String @unique
-
-  priceAtBooking Float
-  quantity       Int   @default(1)
-
-  payment Payment?
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  booking   Booking?  @relation(fields: [bookingId], references: [id])
-  bookingId String?
-  bookings  Booking[]
-}
-
-model Room {
-  id    String @id @default(cuid())
-  name  String
-  type  String
-  price Float
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  bookings  Booking[]
+enum PaymentMethod {
+  ONLINE
+  CASH
 }
 
 enum PaymentStatus {
-  PENDING
-  SUCCESS
-  FAILED
+  UNPAID
+  PAID
+  EXPIRED
 }
 
-enum PaymentType {
-  GOPAY
-  QRIS
-  BANK_TRANSFER
-  CREDIT_CARD
-  SHOPEEPAY
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  role     Role
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  payments  Payment[]
+}
+
+model Customer {
+  id    String @id @default(uuid())
+  name  String
+  email String
+  phone String
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+}
+
+model RoomType {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  price       Int
+  capacity    Int
+
+  rooms Room[]
+
+  createdAt DateTime @default(now())
+}
+
+model Room {
+  id         String  @id @default(uuid())
+  roomNumber String  @unique
+  roomTypeId String
+  isActive   Boolean @default(true)
+
+  roomType RoomType  @relation(fields: [roomTypeId], references: [id])
+  bookings Booking[]
+}
+
+model Booking {
+  id          String @id @default(uuid())
+  bookingCode String @unique
+
+  source BookingSource
+
+  customerId String
+  roomId     String
+
+  checkInDate  DateTime
+  checkOutDate DateTime
+
+  bookingStatus BookingStatus
+  paymentMethod PaymentMethod
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  room     Room     @relation(fields: [roomId], references: [id])
+  payment  Payment?
+
+  createdAt     DateTime       @default(now())
+  guestIdentity GuestIdentity?
 }
 
 model Payment {
-  id String @id @default(cuid())
+  id        String @id @default(uuid())
+  bookingId String @unique
 
-  amount Float
-  status PaymentStatus @default(PENDING)
-  type   PaymentType?
+  method PaymentMethod
+  status PaymentStatus
+  amount Int
 
-  midtransOrderId String    @unique
-  transactionTime DateTime?
-  settlementTime  DateTime?
+  // ONLINE (DOKU)
+  gateway       String?
+  transactionId String?
+  rawCallback   Json?
 
-  booking   Booking @relation(fields: [bookingId], references: [id])
-  bookingId String  @unique
+  // CASH
+  receivedById String?
+
+  booking    Booking @relation(fields: [bookingId], references: [id])
+  receivedBy User?   @relation(fields: [receivedById], references: [id])
+
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model GuestIdentity {
+  id        String @id @default(uuid())
+  bookingId String @unique
+
+  idType   String
+  idNumber String
+
+  verifiedBy String
+
+  booking Booking @relation(fields: [bookingId], references: [id])
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
